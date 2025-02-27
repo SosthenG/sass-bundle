@@ -12,6 +12,7 @@ namespace Symfonycasts\SassBundle\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfonycasts\SassBundle\SassBuilder;
@@ -31,6 +32,7 @@ class SassBuildCommand extends Command
     protected function configure(): void
     {
         $this->addOption('watch', 'w', null, 'Watch for changes and rebuild automatically');
+        $this->addOption('timeout', 't', InputOption::VALUE_OPTIONAL, 'The process timeout');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -40,7 +42,8 @@ class SassBuildCommand extends Command
         $this->sassBuilder->setOutput($io);
 
         $process = $this->sassBuilder->runBuild(
-            $input->getOption('watch')
+            $input->getOption('watch'),
+            $input->getOption('timeout')
         );
 
         $process->wait(function ($type, $buffer) use ($io) {
