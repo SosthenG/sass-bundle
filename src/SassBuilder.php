@@ -78,7 +78,7 @@ class SassBuilder
         return $outputDirectory.'/'.$fileName.'.output.css';
     }
 
-    public function runBuild(bool $watch): Process
+    public function runBuild(bool $watch, ?int $timeout = null): Process
     {
         $binary = $this->createBinary();
 
@@ -92,6 +92,8 @@ class SassBuilder
             $process->setTimeout(null);
             $inputStream = new InputStream();
             $process->setInput($inputStream);
+        } elseif (null !== $timeout) {
+            $process->setTimeout($timeout);
         }
 
         $this->output?->note('Executing Sass (pass -v to see more details).');
